@@ -106,12 +106,19 @@ def _parser() -> argparse.ArgumentParser:
 
     handoff = sub.add_parser("handoff", help="silent handoff text for the owner bot")
     handoff.add_argument("path")
+
+    sub.add_parser("card", help="build or lint a Milou question card")
     return parser
 
 
 def main(argv=None) -> int:
+    raw = list(sys.argv[1:] if argv is None else argv)
+    if raw and raw[0] == "card":
+        from clair_toolkit.card import main as card_main
+
+        return card_main(raw[1:])
     parser = _parser()
-    args = parser.parse_args(argv)
+    args = parser.parse_args(raw)
     try:
         return _run(args)
     except FileNotFoundError as exc:
