@@ -1,0 +1,13 @@
+Özelleştirme No:TR1.2Senaryo :TEMELFATURAFatura Tipi :SATISFatura Sıra No:ORN2026000007777Fatura Dönemi:11 - 11 - 2026/11-2026ETTN :aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+ORNEK ENERJI PERAKENDE SATIS A.S
+Ornek Mah. Deneme Cad No : 1 Ornek/Istanbul Tel: 4440000 Web Sitesi:www.ornek-enerji.example E-Posta:info@ornek-enerji.example Vergi Dairesi:ORNEK V.D. VKN:1234567890
+Fatura Tutarı 100,50TL
+KDV (Matrah 80,00) 20,50
+ÖdenecekTutar
+102,00
+Son ÖdemeTarihi
+23 - 11 - 2026
+e-FATURA
+Tuketici Bilgisi
+ALICI AMBALAJ A.S.
+TCKN/VKN : 1098765432

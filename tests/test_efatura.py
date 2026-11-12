@@ -119,6 +119,60 @@ def test_minified_title_is_not_part_of_the_supplier(tmp_path):
     assert data["total"] == "12.00"
 
 
+def test_utility_pdf_layout(tmp_path):
+    """Electricity-style text: Fatura Sıra No, Fatura Dönemi, ÖdenecekTutar."""
+    text = Path("tests/fixtures/invoice_utility.txt").read_text(encoding="utf-8")
+    parsed = parse_text(text)
+    assert parsed["invoice_no"] == "ORN2026000007777"
+    assert parsed["date"] == "2026-11-11"
+    assert parsed["total"] == "102.00"
+    assert parsed["due_date"] == "2026-11-23"
+    assert parsed["supplier"] == "ORNEK ENERJI PERAKENDE SATIS A.S"
+    assert parsed["vkn"] == "1234567890"
+    pdf = tmp_path / "utility.pdf"
+    pdf.write_bytes(
+        text_pdf(
+            [
+                "Ozellestirme No:TR1.2 Fatura Sira No:ORN2026000007777 Fatura Donemi:11 - 11 - 2026/11-2026",
+                "ORNEK ENERJI PERAKENDE SATIS A.S",
+                "VKN:1234567890",
+                "Fatura Tutari 100,50TL",
+                "OdenecekTutar",
+                "102,00",
+                "Son OdemeTarihi",
+                "23 - 11 - 2026",
+            ]
+        )
+    )
+    data = parse_invoice(pdf, at="2026-11-12 08:00")
+    assert data["invoice_no"] == "ORN2026000007777"
+    assert data["date"] == "2026-11-11"
+    assert data["total"] == "102.00"
+    assert data["due_date"] == "2026-11-23"
+
+
+def test_glued_payable_and_vade_note():
+    parsed = parse_text(
+        "\n".join(
+            [
+                "ORNEK KARGO A.S.",
+                "VKN: 1234567890",
+                "Fatura No: ORN2026000000001",
+                "Fatura Tarihi:10-11-2026",
+                "Mal Hizmet Toplam Tutarı10,00 TRY",
+                "KDV Matrahı10,00 TRY",
+                "Hesaplanan KDV(%20)2,00 TRY",
+                "Ödenecek Tutar12,00 TRY",
+                "Fatura vadesi 16.11.2026dir.",
+            ]
+        )
+    )
+    assert parsed["invoice_no"] == "ORN2026000000001"
+    assert parsed["date"] == "2026-11-10"
+    assert parsed["total"] == "12.00"
+    assert parsed["due_date"] == "2026-11-16"
+
+
 def test_edm_shell_is_not_an_invoice():
     proc = run_tool("efatura", SHELL)
     assert proc.returncode == 1

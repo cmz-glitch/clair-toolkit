@@ -61,17 +61,22 @@ _TR = str.maketrans(
     }
 )
 
-_INVOICE_NO = re.compile(r"Fatura\s*(?:No|Numaras[ıi])\s*:?\s*([A-Z][A-Z0-9]{2}\d{13})", re.I)
+_INVOICE_NO = re.compile(
+    r"Fatura\s*(?:S[ıi]ra\s*No|No|Numaras[ıi])\s*:?\s*([A-Z][A-Z0-9]{2}\d{13})",
+    re.I,
+)
 _INVOICE_DATE = re.compile(
-    r"Fatura\s*Tarihi\s*:?\s*(\d{2})[-./](\d{2})[-./](\d{4})", re.I
+    r"Fatura\s*(?:Tarihi|D[oö]nemi)\s*:?\s*(\d{2})\s*[-./]\s*(\d{2})\s*[-./]\s*(\d{4})",
+    re.I,
 )
 _DUE = re.compile(
-    r"(?:Son\s+[ÖO]deme\s+Tarihi|Vade\s+Tarihi|[ÖO]deme\s+Vadesi)\s*:?\s*"
-    r"(\d{2})[-./](\d{2})[-./](\d{4})",
+    r"(?:Son\s*[ÖO]deme\s*Tarihi|Vade\s*Tarihi|[ÖO]deme\s*Vadesi)\s*:?\s*"
+    r"(\d{2})\s*[-./]\s*(\d{2})\s*[-./]\s*(\d{4})",
     re.I,
 )
 _DUE_NOTE = re.compile(
-    r"(?:vade|son\s+[öo]deme)\s+(\d{2})[-./](\d{2})[-./](\d{4})", re.I
+    r"(?:vade\w*|son\s*[öo]deme)\s+(\d{2})\s*[-./]\s*(\d{2})\s*[-./]\s*(\d{4})",
+    re.I,
 )
 _VKN = re.compile(r"\bVKN\s*:?\s*(\d{10,11})", re.I)
 _MONEY = re.compile(
@@ -81,10 +86,14 @@ _META = re.compile(
     r"^(tel|fax|web|e-?posta|e-?mail|vergi|vkn|tckn|mersis|ticaret|adres)\b",
     re.I,
 )
+_SKIP_SUPPLIER = re.compile(
+    r"^(e-?\s*fatura|özelleştirme|ozellestirme|senaryo|fatura tipi|fatura s[ıi]ra|ettn)\b",
+    re.I,
+)
 _MATRAH = re.compile(r"KDV\s*Matrah[ıi]\s*:?\s*", re.I)
 _NET = re.compile(r"Mal\s+Hizmet\s+Toplam\s+Tutar[ıi]\s*:?\s*", re.I)
 _KDV = re.compile(r"Hesaplanan\s+KDV(?:\s*\([^)]*\))?\s*:?\s*", re.I)
-_PAY = re.compile(r"(?:Ö|O)denecek\s+Tutar\s*:?\s*", re.I)
+_PAY = re.compile(r"(?:Ö|O)denecek\s*Tutar\s*:?\s*", re.I)
 _GROSS = re.compile(r"Vergiler\s+Dahil\s+Toplam\s+Tutar[ıi]\s*:?\s*", re.I)
 
 _HEADER_KEYS = (
@@ -341,9 +350,7 @@ def _supplier_name(text: str) -> str | None:
         line = line.strip(" -")
         if len(re.sub(r"[^A-Za-zÇĞİÖŞÜçğıöşü]", "", line)) < 3:
             continue
-        if _META.match(line):
-            continue
-        if re.fullmatch(r"e-?\s*fatura", line, re.I):
+        if _META.match(line) or _SKIP_SUPPLIER.match(line):
             continue
         return re.sub(r"\s+", " ", line)
     return None
