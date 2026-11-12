@@ -22,5 +22,6 @@ python -m clair_toolkit <tool> ...
 - `labels` — flag Cold Mails together with Waiting Reply, Need Attention on an archived thread, or an invoice still in the inbox. `python -m clair_toolkit labels FILE`
 - `cleanup` — for each inbox thread, KEEP or ARCHIVE with a reason, one list of ids to archive, and label fixes. It never deletes or moves mail. `python -m clair_toolkit cleanup FILE --state cycle_state.json --ours EMAIL [--queue FILE]`
 - `handoff` — name the owner bot and a silent handoff note (rule line, then facts). `python -m clair_toolkit handoff CLASSIFIED.json`
+- `card` — build a Milou question card (4 to 6 options, write-in box, multiSelect, recommended option first) or lint a hand-made one. `milou-card "Question?" "Yes" "Option 2" "Option 3" "Option 4"` or `python -m clair_toolkit card ...`
 
 Skill notes for each command are in `skills/`. `skills/handoff-rule/SKILL.md` is the silent-handoff rule.
