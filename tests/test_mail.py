@@ -1,6 +1,6 @@
 import json
 
-from tests.conftest import load_out, run_tool
+from tests.support import load_out, run_tool
 
 OURS = "ops@entegrepack.com"
 

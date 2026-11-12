@@ -1,7 +1,7 @@
 import json
 
 from clair_toolkit.cycle_state import add_no_followup, is_handled, mark_handled
-from tests.conftest import load_out, run_tool
+from tests.support import load_out, run_tool
 
 
 def test_queue_append_done_list_chase(tmp_path):

@@ -155,7 +155,7 @@ class _Extractor(HTMLParser):
                 self.rows.append(self._row)
             self._row = None
             self.parts.append("\n")
-        elif tag in {"p", "div", "h1", "h2", "li", "table"}:
+        elif tag in {"p", "div", "h1", "h2", "li", "table", "title", "head", "body"}:
             self.parts.append("\n")
 
     def handle_data(self, data):

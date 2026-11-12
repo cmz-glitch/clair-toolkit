@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from clair_toolkit.efatura import parse_invoice, parse_text, supplier_slug
-from tests.conftest import load_out, run_tool
+from tests.support import load_out, run_tool
 from tests.pdfutil import text_pdf
 
 FIXTURE = Path("tests/fixtures/invoice_ornek.html")
@@ -100,6 +100,23 @@ def test_pdf_invoice(tmp_path):
     assert data["total"] == "2400.00"
     assert data["due_date"] == "2026-11-23"
     assert data["filename"].endswith("_ORN2026000001420.pdf")
+
+
+def test_minified_title_is_not_part_of_the_supplier(tmp_path):
+    path = tmp_path / "min.html"
+    path.write_text(
+        "<html><head><title>e-Fatura</title></head><body><table><tr><td>"
+        "ORNEK HIDROLIK LTD STI<br>VKN: 1234567890</td></tr></table>"
+        "SAYIN<br>ALICI A.S.<br>VKN: 1098765432<br>"
+        "Fatura No: ORN2026000001001<br>Fatura Tarihi: 01-11-2026<br>"
+        "KDV Matrahı 10,00 TL<br>Hesaplanan KDV 2,00 TL<br>Ödenecek Tutar 12,00 TL"
+        "</body></html>",
+        encoding="utf-8",
+    )
+    data = parse_invoice(path, at="2026-11-12 08:00")
+    assert data["supplier"] == "ORNEK HIDROLIK LTD STI"
+    assert data["invoice_no"] == "ORN2026000001001"
+    assert data["total"] == "12.00"
 
 
 def test_edm_shell_is_not_an_invoice():

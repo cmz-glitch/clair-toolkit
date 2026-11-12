@@ -7,3 +7,4 @@ dependencies = ["pypdf==5.9.0"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
