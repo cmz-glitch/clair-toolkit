@@ -1,0 +1,5 @@
+# CLASS term
+# C = owner location (outbound-safety class C)
+# B = other supplier / competitor (class B)
+C dubai
+B jayden

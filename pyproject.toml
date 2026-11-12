@@ -1,0 +1,9 @@
+[project]
+name = "clair-toolkit"
+version = "1.0.0"
+description = "Deterministic mailbox helpers for Clair"
+requires-python = ">=3.11"
+dependencies = ["pypdf==5.9.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
